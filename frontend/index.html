@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create, save, preview, and print a professional student resume.">
+  <title>ResumeCraft — Student Resume Builder</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="ResumeCraft home"><span class="brand-mark">R</span> ResumeCraft</a>
+    <nav class="top-actions" aria-label="Main navigation">
+      <span id="user-label" class="muted"></span>
+      <button id="logout-btn" class="button button-ghost hidden" type="button">Sign out</button>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section id="auth-view" class="auth-layout">
+      <div class="hero-copy">
+        <p class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p>
+        <h1>A resume that opens<br><span>the right doors.</span></h1>
+        <p class="lead">Build a clear, professional resume in minutes. Save your progress, preview it live, and print a polished copy whenever you're ready.</p>
+        <div class="hero-points">
+          <div><span class="check">✓</span><span>Made for students and fresh graduates</span></div>
+          <div><span class="check">✓</span><span>Simple guided sections, no design skills needed</span></div>
+          <div><span class="check">✓</span><span>Your resume is saved to your account</span></div>
+        </div>
+      </div>
+      <section class="auth-card card">
+        <div class="tab-row" role="tablist" aria-label="Account options">
+          <button class="tab active" id="signin-tab" type="button" role="tab" aria-selected="true">Sign in</button>
+          <button class="tab" id="signup-tab" type="button" role="tab" aria-selected="false">Create account</button>
+        </div>
+        <div id="auth-message" class="notice hidden" role="status"></div>
+        <form id="auth-form">
+          <h2 id="auth-heading">Welcome back</h2>
+          <p id="auth-subheading" class="muted">Sign in to continue editing your resume.</p>
+          <label for="auth-name" id="name-label" class="hidden">Full name</label>
+          <input id="auth-name" name="name" autocomplete="name" placeholder="Full name" class="hidden">
+          <label for="auth-email">Email address</label>
+          <input id="auth-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <label for="auth-password">Password</label>
+          <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required>
+          <button id="auth-submit" class="button button-primary full-width" type="submit">Sign in</button>
+          <p class="small muted">Use an email address you can access. Your password is handled by Supabase Authentication.</p>
+        </form>
+      </section>
+    </section>
+
+    <section id="app-view" class="hidden">
+      <div class="page-heading">
+        <div><p class="eyebrow">RESUME WORKSPACE</p><h1>Build your story.</h1><p class="muted">Fill in what you know now. You can come back and improve it later.</p></div>
+        <div class="heading-actions"><button id="save-btn" class="button button-primary" type="button">Save resume</button><button id="print-btn" class="button button-outline" type="button">Print / Save PDF</button></div>
+      </div>
+      <div id="app-message" class="notice hidden" role="status"></div>
+      <div class="workspace">
+        <section class="editor card">
+          <div class="section-title"><div><p class="eyebrow">STEP-BY-STEP EDITOR</p><h2>Your information</h2></div><span id="save-state" class="save-state">Not saved yet</span></div>
+          <form id="resume-form">
+            <details open class="form-section">
+              <summary><span class="step-number">1</span> Personal details</summary>
+              <div class="form-grid">
+                <div class="field span-2"><label for="fullName">Full name *</label><input id="fullName" name="fullName" maxlength="100" required placeholder="e.g. Asha Rao"></div>
+                <div class="field"><label for="headline">Professional headline</label><input id="headline" name="headline" maxlength="120" placeholder="e.g. B.Tech Computer Science Student"></div>
+                <div class="field"><label for="email">Contact email</label><input id="email" name="email" type="email" maxlength="254" placeholder="asha@example.com"></div>
+                <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" maxlength="30" placeholder="+91 98765 43210"></div>
+                <div class="field"><label for="location">City / location</label><input id="location" name="location" maxlength="100" placeholder="Hyderabad, India"></div>
+                <div class="field"><label for="linkedin">LinkedIn URL</label><input id="linkedin" name="linkedin" maxlength="300" placeholder="https://linkedin.com/in/you"></div>
+                <div class="field"><label for="portfolio">Portfolio / GitHub URL</label><input id="portfolio" name="portfolio" maxlength="300" placeholder="https://github.com/you"></div>
+                <div class="field span-2"><label for="summary">Profile summary</label><textarea id="summary" name="summary" rows="3" maxlength="1200" placeholder="Write 2–4 sentences about your interests, strengths, and goals."></textarea></div>
+              </div>
+            </details>
+            <details class="form-section" open>
+              <summary><span class="step-number">2</span> Education</summary>
+              <div id="education-list" class="repeat-list"></div>
+              <button class="button button-small button-outline" data-add="education" type="button">＋ Add education</button>
+            </details>
+            <details class="form-section" open>
+              <summary><span class="step-number">3</span> Skills</summary>
+              <div class="field"><label for="skills">Skills (separate with commas)</label><textarea id="skills" name="skills" rows="2" maxlength="1500" placeholder="JavaScript, HTML, CSS, communication, teamwork"></textarea><small class="muted">Tip: include skills you can confidently discuss in an interview.</small></div>
+            </details>
+            <details class="form-section" open>
+              <summary><span class="step-number">4</span> Projects</summary>
+              <div id="projects-list" class="repeat-list"></div>
+              <button class="button button-small button-outline" data-add="projects" type="button">＋ Add project</button>
+            </details>
+            <details class="form-section">
+              <summary><span class="step-number">5</span> Experience &amp; activities</summary>
+              <div id="experience-list" class="repeat-list"></div>
+              <button class="button button-small button-outline" data-add="experience" type="button">＋ Add experience</button>
+            </details>
+            <div class="form-footer"><span class="muted small">Fields marked * are required.</span><button class="button button-primary" type="submit">Save resume</button></div>
+          </form>
+        </section>
+        <aside class="preview-column">
+          <div class="preview-toolbar"><div><p class="eyebrow">LIVE PREVIEW</p><h2>Your resume</h2></div><span class="live-pill"><span></span> Live</span></div>
+          <article id="resume-preview" class="resume-paper" aria-label="Resume preview"></article>
+          <p class="preview-hint">The preview updates as you type. Use <strong>Print / Save PDF</strong> to print or save a PDF from your browser.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="admin-view" class="hidden">
+      <div class="page-heading"><div><p class="eyebrow">ADMINISTRATION</p><h1>Account overview</h1><p class="muted">Basic account management for the project demonstration.</p></div><button id="admin-refresh" class="button button-outline" type="button">Refresh</button></div>
+      <div class="card admin-card"><h2>Registered accounts</h2><p class="muted">Only account email, role, and creation date are shown. Resume content is not displayed here.</p><div id="admin-table-wrap"></div></div>
+    </section>
+  </main>
+  <footer class="footer"><span>ResumeCraft</span><span>Thoughtfully built for student careers.</span></footer>
+
+  <template id="education-template">
+    <div class="repeat-card" data-item>
+      <div class="repeat-heading"><strong>Education entry</strong><button class="remove-item" type="button" aria-label="Remove education entry">Remove</button></div>
+      <div class="form-grid">
+        <div class="field span-2"><label>Institution *</label><input data-key="institution" maxlength="180" placeholder="College or university"></div>
+        <div class="field"><label>Degree / course</label><input data-key="degree" maxlength="120" placeholder="B.Tech Computer Science"></div>
+        <div class="field"><label>Location</label><input data-key="location" maxlength="100" placeholder="Hyderabad"></div>
+        <div class="field"><label>Start year</label><input data-key="startYear" maxlength="20" placeholder="2024"></div>
+        <div class="field"><label>End year</label><input data-key="endYear" maxlength="20" placeholder="2028 / Present"></div>
+        <div class="field span-2"><label>Details / grade</label><textarea data-key="details" rows="2" maxlength="500" placeholder="CGPA, relevant coursework, achievements"></textarea></div>
+      </div>
+    </div>
+  </template>
+  <template id="projects-template">
+    <div class="repeat-card" data-item>
+      <div class="repeat-heading"><strong>Project entry</strong><button class="remove-item" type="button" aria-label="Remove project entry">Remove</button></div>
+      <div class="form-grid">
+        <div class="field span-2"><label>Project title *</label><input data-key="title" maxlength="180" placeholder="Resume Builder"></div>
+        <div class="field span-2"><label>Description</label><textarea data-key="description" rows="3" maxlength="1000" placeholder="What problem did it solve? What did you build?"></textarea></div>
+        <div class="field"><label>Technologies</label><input data-key="technologies" maxlength="300" placeholder="HTML, CSS, JavaScript"></div>
+        <div class="field"><label>Project URL</label><input data-key="url" maxlength="300" placeholder="https://github.com/you/project"></div>
+      </div>
+    </div>
+  </template>
+  <template id="experience-template">
+    <div class="repeat-card" data-item>
+      <div class="repeat-heading"><strong>Experience entry</strong><button class="remove-item" type="button" aria-label="Remove experience entry">Remove</button></div>
+      <div class="form-grid">
+        <div class="field"><label>Role / activity *</label><input data-key="role" maxlength="150" placeholder="Student Volunteer"></div>
+        <div class="field"><label>Organization</label><input data-key="organization" maxlength="180" placeholder="College club"></div>
+        <div class="field"><label>Duration</label><input data-key="duration" maxlength="80" placeholder="Jan 2025 – Mar 2025"></div>
+        <div class="field span-2"><label>Highlights</label><textarea data-key="details" rows="2" maxlength="800" placeholder="Responsibilities, impact, or achievements"></textarea></div>
+      </div>
+    </div>
+  </template>
+</body>
+</html>
